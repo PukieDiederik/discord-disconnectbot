@@ -36,8 +36,8 @@ exports.processCommands = (message, client) => {
                 case "h":
                     multiplier = 60 * 60 * 1000;
             }
-
             let timeAmount = fields[1].slice(0,fields[1].length-1);
+            message.channel.send(`disconneting you in: ${timeAmount * multiplier / 1000}`);
             //disconnect person
             setTimeout(() => message.member.voice.disconnect(), timeAmount * multiplier);
         }
