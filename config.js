@@ -1,0 +1,1 @@
+exports.COMMAND_PREFIX = "dc!";
