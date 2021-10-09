@@ -1,13 +1,14 @@
-const {COMMAND_PREFIX} = require("./config.js")
+const {COMMAND_PREFIX} = require("./config.js");
+const botUtils = require("./botUtils");
+
 //this file will process the commands and call the right function if possible
 exports.processCommands = (message, client) => {
     if(!message.content) {console.error("ERROR processCommands: message does not include content"); return null;}
 
     //split the message
     let fields = message.content.slice(3,message.content.length).split(' ');
-    if(fields.length < 1) {
-        console.error("ERROR processCommands: command does not have enough options"); 
-        message.channel.send("not enough options")
+    if(!fields.length[0]) {
+        botUtils.displayErrorMessage(message.channel, "No subcommand specified", "You seem to have not added a subcommand, use the help command to see what are valid options");
         return null;
     }
 
@@ -16,9 +17,8 @@ exports.processCommands = (message, client) => {
         message.member.voice.disconnect();
         return true;
     } else if (fields[0] == "timer"){
-        if (fields[0].length < 2) {
-            console.error("ERROR processCommands/timer: command does not have enough options"); 
-            message.channel.send("not enough options");
+        if (fields.length < 2) {
+            botUtils.displayErrorMessage(message.channel, "Not enough args", "Not enough arguments were given, make sure you added all the required arguments");
             return null;
         //check if a valid time has been given
         } else if (new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[1])){
@@ -37,7 +37,7 @@ exports.processCommands = (message, client) => {
                     multiplier = 60 * 60 * 1000;
             }
             let timeAmount = fields[1].slice(0,fields[1].length-1);
-            message.channel.send(`disconneting you in: ${timeAmount * multiplier / 1000}`);
+            botUtils.displayInfoMessage(message.channel, `disconneting **you** in: **${timeAmount * multiplier / 1000}** seconds`);
             //disconnect person
             setTimeout(() => message.member.voice.disconnect(), timeAmount * multiplier);
         }
