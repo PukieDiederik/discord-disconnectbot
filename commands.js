@@ -2,7 +2,7 @@ const {COMMAND_PREFIX} = require("./config.js");
 const botUtils = require("./botUtils");
 
 //this file will process the commands and call the right function if possible
-exports.processCommands = (message, client) => {
+exports.processCommands = (message, client, dcHandler) => {
     if(!message.content) {console.error("ERROR processCommands: message does not include content"); return null;}
 
     //split the message
@@ -13,7 +13,7 @@ exports.processCommands = (message, client) => {
     }
 
     if(fields[0] == "me"){
-        disconnectUser(message.channel, message.member, 0)
+        disconnectUser(message.channel, message.member, 0, dcHandler)
         return true;
     } 
     
@@ -23,21 +23,25 @@ exports.processCommands = (message, client) => {
             return null;
         //check if a valid time has been given
         } else if (new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[1])){
-            disconnectUser(message.channel, message.member, fields[1]);
+            disconnectUser(message.channel, message.member, fields[1], dcHandler);
             return true;
         }
+    }
+
+    else if(fields[0] == "cancel"){
+        dcHandler.removeUser(message.member.id, message.member.guild.id)
     }
 }
 
 //function & helper functions to disconnect users
-function disconnectUser (channel, member, time){
+function disconnectUser (channel, member, time, dcHandler){
     //convert the time if necessary 
     if (typeof(time) == "string") time = processTimeMsg(time);
 
     //disconnect user
-    console.log("disconnecting user: " + member.displayName);
-    botUtils.displayInfoMessage(channel, `disconneting **${member.displayName}** in: **${time / 1000}** seconds`);
-    setTimeout(() => member.voice.disconnect(), time);
+    console.log(`dc-timer: u:${member.id} g:${member.guild.id} c:${channel}, t:${time}`);
+    botUtils.displayInfoMessage(channel, `disconnecting **${member.displayName}** in: **${time / 1000}** seconds`);
+    dcHandler.addUser(new botUtils.UserToDisconnect(member, null, time));
 }
 
 function processTimeMsg (msg){
