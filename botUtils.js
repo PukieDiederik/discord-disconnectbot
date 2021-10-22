@@ -2,8 +2,6 @@ const { MessageEmbed } = require("discord.js");
 const config = require("./config.js");
 //sends a stylized error message, TODO:
 function displayErrorMessage (channel, error, errorDescription){
-    //log the error message in console
-    console.error(`ERR:${error}`);
     //send error message to the user
     const embed = new MessageEmbed()
         .setColor(config.ERROR_COLOR)

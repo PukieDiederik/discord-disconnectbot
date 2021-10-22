@@ -12,24 +12,30 @@ exports.processCommands = (message, client, dcHandler) => {
         return null;
     }
 
-    if(fields[0] == "me"){
-        disconnectUser(message.channel, message.member, 0, dcHandler)
-        return true;
-    } 
-    
-    else if (fields[0] == "timer"){
-        if (fields.length < 2) {
-            botUtils.displayErrorMessage(message.channel, "Not enough args", "Not enough arguments were given, make sure you added all the required arguments");
+    switch (fields[0]){
+        //Disconnect user based on time,
+        //FORMAT: 
+        case "timer":
+            if (fields.length < 2) {
+                botUtils.displayErrorMessage(message.channel, "Not enough args", "Not enough arguments were given, make sure you added all the required arguments");
+                return null;
+            //check if a valid time has been given
+            } else if (new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[1])){
+                disconnectUser(message.channel, message.member, fields[1], dcHandler);
+                return true;
+            }
             return null;
-        //check if a valid time has been given
-        } else if (new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[1])){
-            disconnectUser(message.channel, message.member, fields[1], dcHandler);
-            return true;
-        }
-    }
 
-    else if(fields[0] == "cancel"){
-        dcHandler.removeUser(message.member.id, message.member.guild.id)
+        case "me":
+            disconnectUser(message.channel, message.member, 0, dcHandler)
+            return true;
+
+        case "cancel":
+            dcHandler.removeUser(message.member.id, message.member.guild.id)
+            return true;
+
+        default:
+            botUtils.displayErrorMessage(message.channel, "Unknown command:", `Could not find command: **${fields[0]}**`)
     }
 }
 
