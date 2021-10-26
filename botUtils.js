@@ -31,12 +31,11 @@ class UserToDisconnect{
         this.promise = new Promise((resolve, reject) => {
             this.cancel = reject;
             
-            setTimeout(() => {resolve();}, time);
-        })  .then(() => {
-                this.member.voice.disconnect();
-                
-                dcHandler.removeUser(this.member.id, this.member.guild.id)})
-            .catch(() => console.log(`dc-tFinish: u:${this.member.id} g:${this.member.guild.id}`));
+            setTimeout(() => {resolve();}, this.time);})
+        .then(() => {
+            this.member.voice.disconnect();
+            
+            dcHandler.removeUser(this.member.id, this.member.guild.id)});
     }
 }
 
@@ -73,3 +72,6 @@ exports.displayInfoMessage  = displayInfoMessage;
 exports.displayErrorMessage = displayErrorMessage;
 exports.UserToDisconnect = UserToDisconnect;
 exports.DisconnectQueueHandler = DisconnectQueueHandler;
+
+exports.timeRegex = new RegExp(/^[0-9]+[m|s|h]$/i);
+exports.userRegex = new RegExp(/^<@![0-9]+>$/);

@@ -27,8 +27,8 @@ exports.processCommands = (message, client, dcHandler) => {
                                              "Either not enough or too many arguments");
                 return null;
             } //check if the arguments are in the correct format
-            else if (new RegExp(/^<@![0-9]+>$/).test(fields[1]) &&    // user
-                     new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[2])){ // time
+            else if (botUtils.userRegex.test(fields[1]) &&    // user
+                     botUtils.timeRegex.test(fields[2])){ // time
                 disconnectUser(message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)), // member 
                                fields[2], message.channel,dcHandler)                                    // time, msgChannel, dcHandler
                 return true;
@@ -43,7 +43,7 @@ exports.processCommands = (message, client, dcHandler) => {
         //USAGE: disconnect [user]
         case "now":
             if(fields.length == 2){
-                if(new RegExp(/^<@![0-9]+>$/).test(fields[1])){
+                if(botUtils.userRegextest(fields[1])){
                     message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)).voice.disconnect();
                     return true;
                 } else {
@@ -62,7 +62,7 @@ exports.processCommands = (message, client, dcHandler) => {
         //USAGE: Cancel [user] from disconnecting by dc!timer
         case "cancel":
             if(fields.length == 2){
-                if(new RegExp(/^<@![0-9]+>$/).test(fields[1])){
+                if(botUtils.userRegex.test(fields[1])){
                     dcHandler.removeUser(fields[1].slice(3, fields[1].length-1), message.member.guild.id)
                     return true;
                 } else {
@@ -82,7 +82,7 @@ exports.processCommands = (message, client, dcHandler) => {
                     .setColor(config.QUEUE_COLOR)
                     .setTitle("Disconnect Queue");
                 for(const x of dcHandler.list(message.guild.id)){
-                    embed.addField(x.member.displayName, x.channel ? `time: ${x.time/1000}s, channel: ${x.channel.toString()}`: `time ${x.time}`);
+                    embed.addField(x.member.displayName, `time ${x.time}`);
                 }
                 message.channel.send({embeds: [embed]});
                 return true;
