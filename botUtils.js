@@ -34,7 +34,9 @@ class UserToDisconnect{
             
             setTimeout(() => {resolve();}, time);
         })  .then(() => {
-                guildMember.voice.disconnect();
+                if(this.member.voice.channel == this.channel){
+                    this.member.voice.disconnect();
+                }
                 dcHandler.removeUser(this.member.id + this.member.guild.id)})
             .catch(() => console.log(`dc-tFinish: u:${this.member.id} g:${this.member.guild.id} c:${this.channel}`));
     }

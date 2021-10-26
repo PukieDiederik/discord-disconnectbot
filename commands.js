@@ -13,7 +13,7 @@ exports.processCommands = (message, client, dcHandler) => {
     }
 
     switch (fields[0]){
-        //Disconnect user based on time,
+        //Disconnect [user] based on time
         //FORMAT: [user] [time] <channel>
         //USAGE: disconnect [user] in [time] when they are in <channel> channel
         case "timer":
@@ -24,7 +24,7 @@ exports.processCommands = (message, client, dcHandler) => {
             } //check if the arguments are in the correct format
             else if (new RegExp(/^<@![0-9]+>$/).test(fields[1]) &&                             // user
                      new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[2]) &&                         // time
-                     (fields[3] ? new RegExp(/^<@#[0-9]+>$/).test(fields[3]) : true)){         // opt: channel
+                     (fields[3] ? new RegExp(/^<#[0-9]+>$/).test(fields[3]) : true)){         // opt: channel
                 disconnectUser(message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)),                    //member
                                fields[3] ? message.guild.channels.cache.get(fields[3].slice(2,fields[3].length-1)) : null, //channel 
                                fields[2], message.channel,dcHandler)                                    // time, msgChannel, dcHandler
@@ -35,6 +35,9 @@ exports.processCommands = (message, client, dcHandler) => {
                 return null;
             }
 
+        //Disconnect "you"
+        //FORMAT: <time>
+        //USAGE: disconnect "you" in <time> when "you" 
         case "me":
             disconnectUser(message.member, null, 0, message.channel, dcHandler)
             return true;
