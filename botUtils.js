@@ -15,7 +15,7 @@ function displayErrorMessage (channel, error, errorDescription){
 function displayInfoMessage (channel, message, title = ""){
     //send info message to the user
     const embed = new MessageEmbed()
-        .setColor(config.INFO_COLOR)
+        .setColor(config.TIMER_COLOR)
         .setTitle(title)
         .setDescription(message);
 

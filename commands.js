@@ -1,4 +1,4 @@
-const { MessageEmbed, Message } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 
 const config = require("./config.js");
 const botUtils = require("./botUtils");
@@ -6,7 +6,10 @@ const botUtils = require("./botUtils");
 //this file will process the commands and call the right function if possible
 exports.processCommands = (message, client, dcHandler) => {
     if(!message.content) {console.error("ERROR processCommands: message does not include content"); return null;}
-
+    if(!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)){
+        botUtils.displayErrorMessage(message.channel, "Invalid Permissions", "You do not have admin")
+        return null;
+    }
     //split the message
     let fields = message.content.slice(3,message.content.length).split(' ');
     if(fields.length[0] == "") {
