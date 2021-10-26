@@ -35,12 +35,24 @@ exports.processCommands = (message, client, dcHandler) => {
                 return null;
             }
 
-        //Disconnect "you"
-        //FORMAT: <time>
-        //USAGE: disconnect "you" in <time> when "you" 
-        case "me":
-            disconnectUser(message.member, null, 0, message.channel, dcHandler)
-            return true;
+        //Disconnect user now
+        //FORMAT: [user]
+        //USAGE: disconnect [user]
+        case "now":
+            if(fields.length == 2){
+                if(new RegExp(/^<@![0-9]+>$/).test(fields[1])){
+                    message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)).voice.disconnect();
+                    return true;
+                } else {
+                    botUtils.displayErrorMessage(message.channel, "Invalid arguments",
+                                             "arguments were not in the correct format")
+                    return null;
+                }
+            } else {
+                botUtils.displayErrorMessage(message.channel, "Incorrect amount of arguments",
+                                             "Either not enough or too many arguments");
+                return null
+            }
 
         case "cancel":
             dcHandler.removeUser(message.member.id, message.member.guild.id)
