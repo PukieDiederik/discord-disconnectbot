@@ -1,3 +1,5 @@
+const { MessageEmbed } = require("discord.js");
+
 const {COMMAND_PREFIX} = require("./config.js");
 const botUtils = require("./botUtils");
 
@@ -71,6 +73,21 @@ exports.processCommands = (message, client, dcHandler) => {
                 botUtils.displayErrorMessage(message.channel, "Incorrect amount of arguments",
                                              "Either not enough or too many arguments");
                 return null
+            }
+
+        case "queue":
+            if (fields.length == 1){
+                const embed = new MessageEmbed()
+                    .setColor("GREEN")
+                    .setTitle("Disconnect Queue")
+                for(const x of dcHandler.list(message.guild.id)){
+                    embed.addField(x.member.displayName, x.channel ? `time: ${x.time/1000}s, channel: ${x.channel.toString()}`: `time ${x.time}`);
+                }
+                message.channel.send({embeds: [embed]});
+                return true;
+            } else {
+                botUtils.displayErrorMessage(message.channel, "Too many arguments",
+                                             "There are too many arguments, expected 0");
             }
 
         case "test":

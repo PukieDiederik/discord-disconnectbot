@@ -59,6 +59,14 @@ class DisconnectQueueHandler{
             delete this.disconnectQueue[key]
         }
     }
+
+    list(guildId){
+        const queuedDisconnects = []
+        for(const [key,value] of Object.entries(this.disconnectQueue)){
+            if(key.endsWith(guildId)) queuedDisconnects.push(value);
+        }
+        return queuedDisconnects
+    }
 }
 
 
