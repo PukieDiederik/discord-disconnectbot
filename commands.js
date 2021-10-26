@@ -96,7 +96,7 @@ exports.processCommands = (message, client, dcHandler) => {
                 .setColor(config.HELP_COLOR)
                 .setTitle("Commands:")
                 .addField("dc!**now** @user", "Disconnects the given user")
-                .addField("dc!**timer** @user timed", "Disconnects the user after a certain timed")
+                .addField("dc!**timer** @user time", "Disconnects the user after a certain time")
                 .addField("dc!**queue**", "Lists all people who will get disconnected in this server")
                 .addField("dc!**cancel** @user", "Stops a certain user from disconnecting who was going to be disconnected by this bot");
             const helpEmbed = new MessageEmbed()
