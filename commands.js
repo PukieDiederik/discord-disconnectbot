@@ -45,7 +45,7 @@ exports.processCommands = (message, client, dcHandler) => {
                     return true;
                 } else {
                     botUtils.displayErrorMessage(message.channel, "Invalid arguments",
-                                             "arguments were not in the correct format")
+                                                 "arguments were not in the correct format")
                     return null;
                 }
             } else {
@@ -54,9 +54,24 @@ exports.processCommands = (message, client, dcHandler) => {
                 return null
             }
 
+        //Cancel a user from disconnecting
+        //FORMAT: [user]
+        //USAGE: Cancel [user] from disconnecting by dc!timer
         case "cancel":
-            dcHandler.removeUser(message.member.id, message.member.guild.id)
-            return true;
+            if(fields.length == 2){
+                if(new RegExp(/^<@![0-9]+>$/).test(fields[1])){
+                    dcHandler.removeUser(fields[1].slice(3, fields[1].length-1), message.member.guild.id)
+                    return true;
+                } else {
+                    botUtils.displayErrorMessage(message.channel, "Invalid arguments",
+                                                 "arguments were not in the correct format")
+                    return null;                   
+                }
+            } else {
+                botUtils.displayErrorMessage(message.channel, "Incorrect amount of arguments",
+                                             "Either not enough or too many arguments");
+                return null
+            }
 
         case "test":
             console.log(fields);
