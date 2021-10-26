@@ -19,19 +19,17 @@ exports.processCommands = (message, client, dcHandler) => {
 
     switch (fields[0]){
         //Disconnect [user] based on time
-        //FORMAT: [user] [time] <channel>
-        //USAGE: disconnect [user] in [time] when they are in <channel> channel
+        //FORMAT: [user] [time]
+        //USAGE: disconnect [user] in [time]
         case "timer":
-            if(fields.length < 3){
-                botUtils.displayErrorMessage(message.channel, "Not enough arguments", 
-                                             "Not enough arguments were provided");
+            if(fields.length != 3){
+                botUtils.displayErrorMessage(message.channel, "Incorrect amount of arguments", 
+                                             "Either not enough or too many arguments");
                 return null;
             } //check if the arguments are in the correct format
-            else if (new RegExp(/^<@![0-9]+>$/).test(fields[1]) &&                             // user
-                     new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[2]) &&                         // time
-                     (fields[3] ? new RegExp(/^<#[0-9]+>$/).test(fields[3]) : true)){         // opt: channel
-                disconnectUser(message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)),                    //member
-                               fields[3] ? message.guild.channels.cache.get(fields[3].slice(2,fields[3].length-1)) : null, //channel 
+            else if (new RegExp(/^<@![0-9]+>$/).test(fields[1]) &&    // user
+                     new RegExp(/^[0-9]+[m|s|h]$/i).test(fields[2])){ // time
+                disconnectUser(message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)), // member 
                                fields[2], message.channel,dcHandler)                                    // time, msgChannel, dcHandler
                 return true;
             } else {
@@ -98,13 +96,12 @@ exports.processCommands = (message, client, dcHandler) => {
                 .setColor(config.HELP_COLOR)
                 .setTitle("Commands:")
                 .addField("dc!**now** @user", "Disconnects the given user")
-                .addField("dc!**timer** @user time <channel>", "Disconnects the user after a certain time, <optional> and only if they are in a certain channel")
+                .addField("dc!**timer** @user timed", "Disconnects the user after a certain timed")
                 .addField("dc!**queue**", "Lists all people who will get disconnected in this server")
                 .addField("dc!**cancel** @user", "Stops a certain user from disconnecting who was going to be disconnected by this bot");
             const helpEmbed = new MessageEmbed()
                 .setColor(config.HELP_COLOR)
                 .setTitle("Help:")
-                .addField("Pinging a voice channel", "Right click on the voice channel, select copy id. now whereever you need to ping the vc use `<#PASTE_ID_HERE>`. This should ping the voice channel.")
                 .addField("Time", "Time is specified using the following format: `123h`. First come numbers and last comes `s`,`m`or`h` for seconds, minutes & hours respectively");
             message.channel.send({embeds: [commandEmbed, helpEmbed]});
             return true;
@@ -120,15 +117,14 @@ exports.processCommands = (message, client, dcHandler) => {
 }
 
 //function & helper functions to disconnect users
-//messageChannel is where the message was send, channel is which one it will dc in
-function disconnectUser (member, channel, time, messageChannel, dcHandler){
+function disconnectUser (member, time, messageChannel, dcHandler){
     //convert the time if necessary 
     if (typeof(time) == "string") time = processTimeMsg(time);
 
     //disconnect user
-    console.log(`dc-timer: u:${member.id} g:${member.guild.id} c:${channel}, t:${time}`);
+    console.log(`dc-timer: u:${member.id} g:${member.guild.id} t:${time}`);
     botUtils.displayInfoMessage(messageChannel, `disconnecting **${member.displayName}** in: **${time / 1000}** seconds`);
-    dcHandler.addUser(new botUtils.UserToDisconnect(member, channel, time));
+    dcHandler.addUser(new botUtils.UserToDisconnect(member, time, dcHandler));
 }
 
 function processTimeMsg (msg){

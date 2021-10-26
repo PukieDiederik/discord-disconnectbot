@@ -23,9 +23,8 @@ function displayInfoMessage (channel, message, title = ""){
 }
 //object for disconnecting users
 class UserToDisconnect{
-    constructor(guildMember, channel, time, dcHandler){
+    constructor(guildMember, time, dcHandler){
         this.member = guildMember;
-        this.channel = channel;
         this.time = time;
         this.cancel = null;
 
@@ -34,11 +33,10 @@ class UserToDisconnect{
             
             setTimeout(() => {resolve();}, time);
         })  .then(() => {
-                if(this.member.voice.channel.id == this.channel.id){
-                    this.member.voice.disconnect();
-                }
-                dcHandler.removeUser(this.member.id + this.member.guild.id)})
-            .catch(() => console.log(`dc-tFinish: u:${this.member.id} g:${this.member.guild.id} c:${this.channel}`));
+                this.member.voice.disconnect();
+                
+                dcHandler.removeUser(this.member.id, this.member.guild.id)})
+            .catch(() => console.log(`dc-tFinish: u:${this.member.id} g:${this.member.guild.id}`));
     }
 }
 
