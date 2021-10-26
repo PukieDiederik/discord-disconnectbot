@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Message } = require("discord.js");
 
 const {COMMAND_PREFIX} = require("./config.js");
 const botUtils = require("./botUtils");
@@ -79,7 +79,7 @@ exports.processCommands = (message, client, dcHandler) => {
             if (fields.length == 1){
                 const embed = new MessageEmbed()
                     .setColor("GREEN")
-                    .setTitle("Disconnect Queue")
+                    .setTitle("Disconnect Queue");
                 for(const x of dcHandler.list(message.guild.id)){
                     embed.addField(x.member.displayName, x.channel ? `time: ${x.time/1000}s, channel: ${x.channel.toString()}`: `time ${x.time}`);
                 }
@@ -90,9 +90,25 @@ exports.processCommands = (message, client, dcHandler) => {
                                              "There are too many arguments, expected 0");
             }
 
-        case "test":
-            console.log(fields);
+        case "help":
+            const commandEmbed = new MessageEmbed()
+                .setColor("GREEN")
+                .setTitle("Commands:")
+                .addField("dc!**now** @user", "Disconnects the given user")
+                .addField("dc!**timer** @user time <channel>", "Disconnects the user after a certain time, <optional> and only if they are in a certain channel")
+                .addField("dc!**queue**", "Lists all people who will get disconnected in this server")
+                .addField("dc!**cancel** @user", "Stops a certain user from disconnecting who was going to be disconnected by this bot");
+            const helpEmbed = new MessageEmbed()
+                .setColor("GREEN")
+                .setTitle("Help:")
+                .addField("Pinging a voice channel", "Right click on the voice channel, select copy id. now whereever you need to ping the vc use `<#PASTE_ID_HERE>`. This should ping the voice channel.")
+                .addField("Time", "Time is specified using the following format: `123h`. First come numbers and last comes `s`,`m`or`h` for seconds, minutes & hours respectively");
+            message.channel.send({embeds: [commandEmbed, helpEmbed]});
             return true;
+
+        // case "test":
+        //     console.log(fields);
+        //     return true;
 
         default:
             botUtils.displayErrorMessage(message.channel, "Unknown command:", `Could not find command: **${fields[0]}**`)
