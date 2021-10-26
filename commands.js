@@ -1,6 +1,6 @@
 const { MessageEmbed, Message } = require("discord.js");
 
-const {COMMAND_PREFIX} = require("./config.js");
+const config = require("./config.js");
 const botUtils = require("./botUtils");
 
 //this file will process the commands and call the right function if possible
@@ -78,7 +78,7 @@ exports.processCommands = (message, client, dcHandler) => {
         case "queue":
             if (fields.length == 1){
                 const embed = new MessageEmbed()
-                    .setColor("GREEN")
+                    .setColor(config.QUEUE_COLOR)
                     .setTitle("Disconnect Queue");
                 for(const x of dcHandler.list(message.guild.id)){
                     embed.addField(x.member.displayName, x.channel ? `time: ${x.time/1000}s, channel: ${x.channel.toString()}`: `time ${x.time}`);
@@ -92,14 +92,14 @@ exports.processCommands = (message, client, dcHandler) => {
 
         case "help":
             const commandEmbed = new MessageEmbed()
-                .setColor("GREEN")
+                .setColor(config.HELP_COLOR)
                 .setTitle("Commands:")
                 .addField("dc!**now** @user", "Disconnects the given user")
                 .addField("dc!**timer** @user time <channel>", "Disconnects the user after a certain time, <optional> and only if they are in a certain channel")
                 .addField("dc!**queue**", "Lists all people who will get disconnected in this server")
                 .addField("dc!**cancel** @user", "Stops a certain user from disconnecting who was going to be disconnected by this bot");
             const helpEmbed = new MessageEmbed()
-                .setColor("GREEN")
+                .setColor(config.HELP_COLOR)
                 .setTitle("Help:")
                 .addField("Pinging a voice channel", "Right click on the voice channel, select copy id. now whereever you need to ping the vc use `<#PASTE_ID_HERE>`. This should ping the voice channel.")
                 .addField("Time", "Time is specified using the following format: `123h`. First come numbers and last comes `s`,`m`or`h` for seconds, minutes & hours respectively");
