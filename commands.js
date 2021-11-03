@@ -29,12 +29,12 @@ exports.processCommands = (message, client, dcHandler) => {
             } //check if the arguments are in the correct format
             else if (botUtils.userRegex.test(fields[1]) &&    // user
                      botUtils.timeRegex.test(fields[2])){ // time
-                disconnectUser(message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)), // member 
+                disconnectUser(message.guild.members.cache.get(fields[1].slice(fields[1][2] == "!"? 3 : 2, fields[1].length-1)), // member 
                                fields[2], message.channel,dcHandler)                                    // time, msgChannel, dcHandler
                 return true;
             } else {
                 botUtils.displayErrorMessage(message.channel, "Invalid arguments",
-                                             "arguments were not in the correct format")
+                                             "arguments were not in the correct format");
                 return null;
             }
 
@@ -43,12 +43,12 @@ exports.processCommands = (message, client, dcHandler) => {
         //USAGE: disconnect [user]
         case "now":
             if(fields.length == 2){
-                if(botUtils.userRegextest(fields[1])){
-                    message.guild.members.cache.get(fields[1].slice(3, fields[1].length-1)).voice.disconnect();
+                if(botUtils.userRegex.test(fields[1])){
+                    message.guild.members.cache.get(fields[1].slice(fields[1][2] == "!"? 3 : 2, fields[1].length-1)).voice.disconnect();
                     return true;
                 } else {
                     botUtils.displayErrorMessage(message.channel, "Invalid arguments",
-                                                 "arguments were not in the correct format")
+                                                 "arguments were not in the correct format");
                     return null;
                 }
             } else {
@@ -63,11 +63,11 @@ exports.processCommands = (message, client, dcHandler) => {
         case "cancel":
             if(fields.length == 2){
                 if(botUtils.userRegex.test(fields[1])){
-                    dcHandler.removeUser(fields[1].slice(3, fields[1].length-1), message.member.guild.id)
+                    dcHandler.removeUser(fields[1].slice(fields[1][2] == "!"? 3 : 2, fields[1].length-1), message.member.guild.id);
                     return true;
                 } else {
                     botUtils.displayErrorMessage(message.channel, "Invalid arguments",
-                                                 "arguments were not in the correct format")
+                                                 "arguments were not in the correct format");
                     return null;                   
                 }
             } else {

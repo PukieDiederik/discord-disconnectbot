@@ -74,4 +74,4 @@ exports.UserToDisconnect = UserToDisconnect;
 exports.DisconnectQueueHandler = DisconnectQueueHandler;
 
 exports.timeRegex = new RegExp(/^[0-9]+[m|s|h]$/i);
-exports.userRegex = new RegExp(/^<@![0-9]+>$/);
+exports.userRegex = new RegExp(/^<@!?[0-9]+>$/);
